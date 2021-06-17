@@ -45,17 +45,26 @@ class TransactionDB {
   }
 
   // ดึงข้อมูล
-  Future <bool> loadAllData() async{
+  Future <List<Transactions>> loadAllData() async {
     var db = await this.openDatabase();
     var store = intMapStoreFactory.store("expense");
     var snapshot = await store.find(db);
 
-    // print(snapshot);
-    List transactionList = List <Transactions>();
-
-    return true;
-
+    print(snapshot);
+    List<Transactions> transactionList = List<Transactions>;
+    // ดึงมาทีละแถว
+    for (var record in snapshot) {
+      transactionList.add(
+          Transactions(
+              title: record["title"] as String,
+              amount: record["amount"] as double,
+              date: DateTime.parse(record["date"] as String)
+          )
+      );
+    }
+    return transactionList;
   }
 }
 
 // toIso8601String() มาตราฐานของ date
+// line 59 Transactions
