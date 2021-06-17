@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_and_database/providers/transaction_provider.dart';
 import 'package:flutter_and_database/screens/form_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'models/Transaction.dart';
+import 'models/Transactions.dart';
 
 void main() {
   runApp(MyApp());
@@ -57,26 +60,34 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Consumer(
         builder: (context, TransactionProvider provider, Widget? child) {
-          return ListView.builder(
-              itemCount: provider.transactions.length,
-              itemBuilder: (context, int index) {
-                Transaction data = provider.transactions[index];
-                return Card(
-                  elevation: 5,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: FittedBox(
-                        child: Text(data.amount.toString()),
+          var count = provider.transactions.length;
+          if (count <= 0) {
+            return Center(
+              child: Text("ไม่มีสมาชิกในฐานข้อมูล",style: TextStyle(fontSize: 20),),
+            );
+          }else{
+            return ListView.builder(
+                itemCount: count,
+                itemBuilder: (context, int index) {
+                  Transactions data = provider.transactions[index];
+                  return Card(
+                    elevation: 5,
+                    margin:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        child: FittedBox(
+                          child: Text(NumberFormat("#,###").format(data.amount)),
+                          // child: Text(data.amount.toString()),
+                        ),
+                        radius: 30,
                       ),
-                      radius: 30,
+                      title: Text(data.title),
+                      subtitle: Text(DateFormat("dd-mm-yyyy").format(data.date)),
                     ),
-                    title: Text(data.title),
-                    subtitle: Text(data.date.toString()),
-                  ),
-                );
-              });
+                  );
+                });
+          }
         },
       ),
     );

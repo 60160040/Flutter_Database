@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_and_database/models/Transactions.dart';
+import 'package:flutter_and_database/providers/transaction_provider.dart';
+import 'package:provider/provider.dart';
 
 class FormScreen extends StatelessWidget {
   // const FormScreen({Key? key}) : super(key: key);
 
   final formKey = GlobalKey<FormState>();
+
+  // controller
+  final titleController = TextEditingController(); // รับค่าชื่อรายการ
+  final amountController = TextEditingController(); // รับค่าตัวเลขจำนวนเงิน
 
   @override
   Widget build(BuildContext context) {
@@ -21,32 +28,48 @@ class FormScreen extends StatelessWidget {
               TextFormField(
                 decoration: new InputDecoration(labelText: "ชื่อรายการ"),
                 autofocus: true,
+                controller: titleController,
                 validator: (String? value) {
-                  return (value!.isEmpty)
-                      ? 'กรุณาป้อนชื่อรายการ'
-                      : null;
+                  // ไม่ได้กรอกข้อมูล
+                  if (value!.isEmpty) {
+                    return "กรุณาป้อนชื่อ";
+                  }
+                  return null;
+                  // *1
                 },
               ),
               TextFormField(
                 decoration: new InputDecoration(labelText: "จำนวนเงิน"),
+                controller: amountController,
                 keyboardType: TextInputType.number,
                 validator: (String? value) {
-                  if(value!.isEmpty){
+                  // ไม่ได้กรอกข้อมูล
+                  if (value!.isEmpty) {
                     return 'กรุณาป้อนจำนวนเงิน';
                   }
-                  if (double.parse(value) <= 0){
+                  // เงินติดลบ
+                  if (double.parse(value) <= 0) {
                     return 'กรุณาป้อนจำนวนเงินมากกว่า 0';
                   }
                   return null;
-                  /*return (value!.isEmpty)
-                      ? 'กรุณาป้อนจำนวนเงิน'
-                      : null;*/
                 },
               ),
               TextButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
-                    print(Text("${formKey.currentState!.validate()}"));
+                    var title = titleController.text;
+                    var amount = amountController.text;
+
+                    // เตรียมข้อมูล
+                    Transactions statement = Transactions(
+                        title: title,
+                        amount: double.parse(amount),
+                        date: DateTime.now());
+
+                    // เรียก Provider
+                    var provider = Provider.of<TransactionProvider>(context,
+                        listen: false);
+                    provider.addTransaction(statement);
                     Navigator.pop(context);
                   }
                 },
@@ -63,3 +86,9 @@ class FormScreen extends StatelessWidget {
     );
   }
 }
+/*
+  // 1
+  return (value!.isEmpty)
+   ? 'กรุณาป้อนชื่อรายการ'
+   : null;
+*/

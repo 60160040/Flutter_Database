@@ -1,22 +1,28 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_and_database/models/Transaction.dart';
+import 'package:flutter_and_database/database/transaction_db.dart';
+import 'package:flutter_and_database/models/Transactions.dart';
 
 class TransactionProvider with ChangeNotifier{
-  List<Transaction> transactions = [
-    Transaction(title: "ซื้อหนังสือ",amount: 500,date:DateTime.now()),
-    Transaction(title: "ซื้อเสื้อ",amount: 900,date:DateTime.now()),
-    Transaction(title: "ซื้อกางเกง",amount: 400,date:DateTime.now()),
-    Transaction(title: "นาฬิกา",amount: 1400,date:DateTime.now()),
+  List<Transactions> transactions = [];
 
-  ];
-
-  List<Transaction> getTransaction(){
+  // ดึงข้อมูล
+  List<Transactions> getTransaction(){
     return transactions;
   }
 
-  void addTransaction(Transaction statement){
-    transactions.add(statement);
+  void addTransaction(Transactions statement) async{
+    var db = TransactionDB(dbName: "transactions.db");
+    // บันทึกข้อมูล
+    await db.InsertData(statement);
+
+    // ดึงข้อมูลมาแสดงผล
+    await db.loadAllData();
+    transactions.insert(0,statement);
+    // แจ้งเตือน consumer
+    notifyListeners();
   }
 }
+
+
 
 
