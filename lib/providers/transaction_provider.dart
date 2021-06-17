@@ -17,7 +17,6 @@ class TransactionProvider with ChangeNotifier{
 
     // ดึงข้อมูลมาแสดงผล
     transactions = await db.loadAllData();
-    transactions.insert(0,statement);
     // แจ้งเตือน consumer
     notifyListeners();
   }

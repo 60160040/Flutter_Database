@@ -63,9 +63,12 @@ class _MyHomePageState extends State<MyHomePage> {
           var count = provider.transactions.length;
           if (count <= 0) {
             return Center(
-              child: Text("ไม่มีสมาชิกในฐานข้อมูล",style: TextStyle(fontSize: 20),),
+              child: Text(
+                "ไม่มีสมาชิกในฐานข้อมูล",
+                style: TextStyle(fontSize: 20),
+              ),
             );
-          }else{
+          } else {
             return ListView.builder(
                 itemCount: count,
                 itemBuilder: (context, int index) {
@@ -73,17 +76,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Card(
                     elevation: 5,
                     margin:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                     child: ListTile(
                       leading: CircleAvatar(
                         child: FittedBox(
-                          child: Text(NumberFormat("#,###").format(data.amount)),
+                          child:
+                              Text(NumberFormat("#,###").format(data.amount)),
                           // child: Text(data.amount.toString()),
                         ),
                         radius: 30,
                       ),
                       title: Text(data.title),
-                      subtitle: Text(DateFormat("dd-mm-yyyy").format(data.date)),
+                      subtitle:
+                          Text(DateFormat("dd-mm-yyyy").format(data.date)),
                     ),
                   );
                 });

@@ -51,7 +51,7 @@ class TransactionDB {
     var snapshot = await store.find(db);
 
     print(snapshot);
-    List<Transactions> transactionList = List<Transactions>;
+    List<Transactions> transactionList = <Transactions>[];
     // ดึงมาทีละแถว
     for (var record in snapshot) {
       transactionList.add(
