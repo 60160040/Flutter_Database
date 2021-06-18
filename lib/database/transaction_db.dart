@@ -41,30 +41,34 @@ class TransactionDB {
       "date": statement.date.toIso8601String()
     });
     db.close();
-    return keyID;
+    return keyID; // 1,2,3,...
   }
 
   // ดึงข้อมูล
-  Future <List<Transactions>> loadAllData() async {
+  Future<List<Transactions>> loadAllData() async {
     var db = await this.openDatabase();
     var store = intMapStoreFactory.store("expense");
-    var snapshot = await store.find(db);
+    var snapshot = await store.find(
+      db,
+      finder: Finder(sortOrders: [
+        SortOrder(Field.key, false),
+      ]),
+    );
 
     print(snapshot);
     List<Transactions> transactionList = <Transactions>[];
     // ดึงมาทีละแถว
     for (var record in snapshot) {
-      transactionList.add(
-          Transactions(
-              title: record["title"] as String,
-              amount: record["amount"] as double,
-              date: DateTime.parse(record["date"] as String)
-          )
-      );
+      transactionList.add(Transactions(
+          title: record["title"] as String,
+          amount: record["amount"] as double,
+          date: DateTime.parse(record["date"] as String)));
     }
     return transactionList;
   }
 }
 
 // toIso8601String() มาตราฐานของ date
-// line 59 Transactions
+// line 59 List<Transactions> transactionList = <Transactions>[];
+// form    List<Transactions> transactionList = List<Transactions>(); not null safety
+// finder: Finder(sortOrders: [SortOrder(Field.key, false),]); false เรียงข้อมูลจาก ล่าสุด -> แรกสุด
